@@ -70,8 +70,7 @@ app.get('/auth/google',
 app.get('/auth/google/callback', 
   passport.authenticate('google', { failureRedirect: '/login' }),
   function(req, res) {
-    // Successful authentication, redirect home.
-     res.send('hello');
+     res.send('Success!!!');
 
 	});
 
