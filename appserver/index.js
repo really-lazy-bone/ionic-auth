@@ -1,9 +1,8 @@
 var express = require('express');
 var app = express();
-var GoogleStrategy = require('passport-google-oauth').OAuthStrategy;
-var config = require('./config');
-
+var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+var config = require('./config');
 
 
 // Passport session setup.
@@ -14,6 +13,7 @@ var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 //   have a database of user records, the complete Google profile is
 //   serialized and deserialized.
 passport.serializeUser(function(user, done) {
+	console.log(user);
   done(null, user);
 });
 
@@ -23,32 +23,47 @@ passport.deserializeUser(function(obj, done) {
 
 
 passport.use(new GoogleStrategy({
-    clientID: GOOGLE_CLIENT_ID,
-    clientSecret: GOOGLE_CLIENT_SECRET,
+    clientID: config.GOOGLE_CLIENT_ID,
+    clientSecret: config.GOOGLE_CLIENT_SECRET,
     callbackURL: "http://127.0.0.1:3000/auth/google/callback"
   },
   function(accessToken, refreshToken, profile, done) {
+	      
       process.nextTick(function () {
       
-     
       return done(null, profile);
     });
   }
 ));
 
 app.get('/', function (req, res) {
-  res.send('Hello World!')
+  res.send('Hello World!');
+});
+
+app.get('/user', function (req, res) {
+  
+if (req.isAuthenticated()) {
+	
+		
+	
+	
+}
+
+
+  
+  
 });
 
 
+
 app.get('/auth/google',
-  passport.authenticate('google', { scope: 'https://www.googleapis.com/auth/plus.login' }));
+  passport.authenticate('google', { scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/plus.login' }));
 
 app.get('/auth/google/callback', 
   passport.authenticate('google', { failureRedirect: '/login' }),
   function(req, res) {
     // Successful authentication, redirect home.
-    res.redirect('/');
+  req.dir('/');
   });
 
 var server = app.listen(3000, function () {
