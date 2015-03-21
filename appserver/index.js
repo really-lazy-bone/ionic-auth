@@ -1,8 +1,8 @@
 var express = require('express');
-var app = express();
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var config = require('./config');
+
 
 
 // Passport session setup.
@@ -36,6 +36,16 @@ passport.use(new GoogleStrategy({
   }
 ));
 
+
+var app = express();
+
+   
+  app.use(passport.initialize());
+  app.use(passport.session()); 
+
+
+
+
 app.get('/', function (req, res) {
   res.send('Hello World!');
 });
@@ -44,13 +54,11 @@ app.get('/user', function (req, res) {
   
 if (req.isAuthenticated()) {
 	
-		
+		res.send(JSON.stringify(req.user));
 	
 	
 }
-
-
-  
+ 
   
 });
 
@@ -63,8 +71,9 @@ app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/login' }),
   function(req, res) {
     // Successful authentication, redirect home.
-  req.dir('/');
-  });
+     res.send('hello');
+
+	});
 
 var server = app.listen(3000, function () {
 
